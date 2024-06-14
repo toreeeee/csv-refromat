@@ -47,8 +47,8 @@ func (row *TableRow) Encode(separator string, colLengths []int) string {
 	}), separator)
 }
 
-func New(line string, expectedColumns int) TableRow {
-	split := strings.Split(line, ":")
+func New(line string, expectedColumns int, delimiter string) TableRow {
+	split := strings.Split(line, delimiter)
 
 	for i := 0; i < len(split); i++ {
 		split[i] = strings.Trim(split[i], " ")

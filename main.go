@@ -2,33 +2,20 @@ package main
 
 import (
 	table "csv-format/table"
-	"csv-format/table/tableRow"
 	"errors"
 	"flag"
 	"fmt"
 	"io/fs"
 	"os"
-	"strings"
 	"time"
 )
 
-func parseCSV(content string) {
-	lines := strings.Split(content, "\n")
-
-	var rows []tableRow.TableRow
-
-	for _, line := range lines {
-		rows = append(rows, tableRow.New(line, 2))
-	}
-
-	fmt.Println(rows)
-}
-
 var (
-	inputFile  = flag.String("i", "", "-i <file_path>")
-	outputFile = flag.String("o", "out.csv", "-o <file_path>")
-	format     = flag.Bool("f", false, "add -f to format file and save to input path")
-	delimiter  = flag.String("d", ":", "-d <delimiter>")
+	inputFile    = flag.String("i", "", "-i <file_path>")
+	outputFile   = flag.String("o", "invalid-values.csv", "-o <file_path>")
+	format       = flag.Bool("f", false, "add -f to format file and save to input path")
+	delimiter    = flag.String("d", ":", "-d <delimiter>")
+	outDelimiter = flag.String("od", "", "Output delimiter")
 )
 
 func fileExists(path string) bool {
@@ -40,19 +27,14 @@ func fileExists(path string) bool {
 	return true
 }
 
-func reformatFile(t *table.Table) {
-	start := time.Now()
-	encoded := table.Encode(*delimiter, t.Headings, t.GetInvalidRows())
-	duration := time.Since(start)
-	fmt.Printf("Reformat took %s\n", duration.String())
+func reformatFile(t *table.Table, outPath string) {
+	encoded := table.Encode(*outDelimiter, t.Headings, t.Rows)
 
-	err := os.WriteFile(*inputFile, []byte(encoded), fs.ModePerm)
+	err := os.WriteFile(outPath, []byte(encoded), fs.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
-	fmt.Printf("Took %s\n", time.Since(start).String())
 }
 
 func process() {
@@ -69,6 +51,10 @@ func process() {
 		os.Exit(1)
 	}
 
+	if len(*outDelimiter) == 0 {
+		*outDelimiter = *delimiter
+	}
+
 	fileContent, err := os.ReadFile(*inputFile)
 
 	if err != nil {
@@ -78,20 +64,14 @@ func process() {
 
 	file := string(fileContent)
 
-	start := time.Now()
 	parsed := table.Parse(file, *delimiter)
-	parseDuration := time.Since(start)
-	fmt.Printf("Parsing took %s\n", parseDuration.String())
 
 	if *format {
-		reformatFile(&parsed)
+		reformatFile(&parsed, *inputFile)
 		return
 	}
 
 	encoded := table.EncodeWithErrors(*delimiter, parsed.Headings, parsed.GetInvalidRows())
-	duration := time.Since(start)
-
-	fmt.Printf("\nTook %s\n\n", duration.String())
 
 	err = os.WriteFile(*outputFile, []byte(encoded), fs.ModePerm)
 	if err != nil {
