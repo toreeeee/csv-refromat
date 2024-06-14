@@ -38,10 +38,11 @@ func getSpaces(l int) string {
 }
 
 func (row *TableRow) Encode(separator string, colLengths []int) string {
-	return strings.Join(array.Map(row.Cols, func(t string, i int) string {
+	return strings.Join(array.Map(row.Cols, func(t *string, i int) string {
 		colLength := colLengths[i] + 6
-		spacesFront := math.Ceil((float64(colLength-len(t)) / float64(2.0)))
-		spacesEnd := float64(colLength) - (spacesFront + float64(len(t)))
+		valueLength := len(*t)
+		spacesFront := math.Ceil((float64(colLength-valueLength) / float64(2.0)))
+		spacesEnd := float64(colLength) - (spacesFront + float64(valueLength))
 
 		return fmt.Sprintf("%s%s%s", getSpaces(int(spacesFront)), t, getSpaces(int(spacesEnd)))
 	}), separator)

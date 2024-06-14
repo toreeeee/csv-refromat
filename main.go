@@ -28,7 +28,7 @@ func fileExists(path string) bool {
 }
 
 func reformatFile(t *table.Table, outPath string) {
-	encoded := table.Encode(*outDelimiter, t.Headings, t.Rows)
+	encoded := table.Encode(*outDelimiter, &t.Headings, t.Rows)
 
 	err := os.WriteFile(outPath, []byte(encoded), fs.ModePerm)
 	if err != nil {
@@ -71,7 +71,7 @@ func process() {
 		return
 	}
 
-	encoded := table.EncodeWithErrors(*delimiter, parsed.Headings, parsed.GetInvalidRows())
+	encoded := table.EncodeWithErrors(*delimiter, &parsed.Headings, parsed.GetInvalidRows())
 
 	err = os.WriteFile(*outputFile, []byte(encoded), fs.ModePerm)
 	if err != nil {
