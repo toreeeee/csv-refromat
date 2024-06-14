@@ -44,7 +44,7 @@ func (row *TableRow) Encode(separator string, colLengths []int) string {
 		spacesFront := math.Ceil((float64(colLength-valueLength) / float64(2.0)))
 		spacesEnd := float64(colLength) - (spacesFront + float64(valueLength))
 
-		return fmt.Sprintf("%s%s%s", getSpaces(int(spacesFront)), t, getSpaces(int(spacesEnd)))
+		return fmt.Sprintf("%s%s%s", getSpaces(int(spacesFront)), *t, getSpaces(int(spacesEnd)))
 	}), separator)
 }
 
