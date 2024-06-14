@@ -1,11 +1,11 @@
 package main
 
 import (
+	table "csv-format/table"
+	"csv-format/table/tableRow"
 	"errors"
 	"flag"
 	"fmt"
-	table "hello/table"
-	"hello/table/tableRow"
 	"io/fs"
 	"os"
 	"strings"
