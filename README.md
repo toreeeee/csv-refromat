@@ -12,3 +12,10 @@ Usage of ./csv-format:
   -o string
         -o <file_path> (default "out.csv")
 ```
+
+
+### Reformat file
+
+```bash
+./csv-format -i input.csv -od "," -d "," -f
+```
