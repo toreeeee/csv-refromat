@@ -2,8 +2,8 @@ package table
 
 import (
 	"csv-format/table/tableRow"
-	"csv-format/utils/array"
 	"fmt"
+	"math"
 	"strings"
 )
 
@@ -37,7 +37,12 @@ func (t *Table) GetInvalidRows() []tableRow.TableRow {
 
 func getLongestWordCountInColumnRow(rows []tableRow.TableRow, col int) int {
 	longest := 0
+
 	for i := 0; i < len(rows); i++ {
+		if col >= len(rows[i].Cols) {
+			continue
+		}
+
 		s := len(rows[i].Cols[col])
 		if s > longest {
 			longest = s
@@ -70,11 +75,46 @@ func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableR
 		}
 	}
 
+	amountRows := len(rows)
+	batchSize := int(math.Ceil(float64(amountRows) / float64(64.0)))
+
+	encodingChannel := make(chan []string)
+
+	fmt.Printf("amount rows %d\n", amountRows)
+	fmt.Printf("batchSize: %d\n", batchSize)
+
+	batchJobs := int(math.Ceil(float64(amountRows) / float64(batchSize)))
+
+	for i := 0; i < batchJobs; i++ {
+		batchStart := batchSize * i
+		batchEnd := batchSize + batchStart
+
+		go func(batchStart int, batchEnd int) {
+			encodedValues := make([]string, batchSize)
+			c := 0
+			for j := batchStart; j < batchEnd; j++ {
+				if j >= amountRows {
+					continue
+				}
+				//fmt.Println(c)
+				encodedValues[c] = rows[j].Encode(separator, longestWords)
+				c++
+			}
+			encodingChannel <- encodedValues
+		}(batchStart, batchEnd)
+	}
+
+	output := make([]string, amountRows)
+	for i := 0; i < batchJobs; i++ {
+		v := <-encodingChannel
+		output = append(output, v...)
+	}
+
+	//fmt.Println(output)
+
 	return fmt.Sprintf(
 		"%s\n%s", heading.Encode(separator, longestWords),
-		strings.Join(array.Map(rows, func(t *tableRow.TableRow, i int) string {
-			return t.Encode(separator, longestWords)
-		}), "\n"))
+		strings.Join(output, "\n"))
 }
 
 func (t *Table) Encode(separator string) string {

@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"io/fs"
 	"os"
+	"time"
 )
 
 var outputFile *string
@@ -32,9 +33,15 @@ func reformatFile(path string) string {
 	}
 
 	file := string(fileContent)
+	parsingStart := time.Now()
 	parsed := table.Parse(file, *delimiter)
+	fmt.Printf("Parsing took %s\n", time.Since(parsingStart))
 
-	return table.Encode(*outputDelimiter, &parsed.Headings, parsed.Rows)
+	encodingStart := time.Now()
+	encoded := table.Encode(*outputDelimiter, &parsed.Headings, parsed.Rows)
+	fmt.Printf("Encoding took %s\n", time.Since(encodingStart))
+
+	return encoded
 }
 
 func Format(cmd *cobra.Command, args []string) {
@@ -55,7 +62,11 @@ func Format(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	startTime := time.Now()
+
 	reformatted := reformatFile(inputFile)
+
+	fmt.Printf("took %s\n", time.Since(startTime))
 
 	var outPath string
 	if len(*outputFile) != 0 {
@@ -73,6 +84,6 @@ func Format(cmd *cobra.Command, args []string) {
 
 		fmt.Println("File has been updated")
 	} else {
-		fmt.Println(reformatted)
+		//fmt.Println(reformatted)
 	}
 }
