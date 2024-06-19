@@ -48,7 +48,7 @@ func (row *TableRow) Encode(separator string, colLengths []int) string {
 	}), separator)
 }
 
-func New(line string, expectedColumns int, delimiter string) TableRow {
+func New(line string, lineNr int, expectedColumns int, delimiter string) TableRow {
 	split := strings.Split(line, delimiter)
 
 	for i := 0; i < len(split); i++ {
@@ -58,6 +58,7 @@ func New(line string, expectedColumns int, delimiter string) TableRow {
 	row := TableRow{Cols: split}
 
 	if len(row.Cols) != expectedColumns {
+		fmt.Printf("%d: Expected %d column(s), got %d\n", lineNr, expectedColumns, len(row.Cols))
 		row.Errors = append(row.Errors, fmt.Sprintf("Expected %d column(s), got %d", expectedColumns, len(row.Cols)))
 	}
 
