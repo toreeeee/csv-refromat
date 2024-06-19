@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"time"
 )
 
 type Table struct {
@@ -78,7 +79,7 @@ func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableR
 	amountRows := len(rows)
 	batchSize := int(math.Ceil(float64(amountRows) / float64(64.0)))
 
-	encodingChannel := make(chan []string)
+	encodingChannel := make(chan string)
 
 	fmt.Printf("amount rows %d\n", amountRows)
 	fmt.Printf("batchSize: %d\n", batchSize)
@@ -94,21 +95,22 @@ func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableR
 			c := 0
 			for j := batchStart; j < batchEnd; j++ {
 				if j >= amountRows {
-					continue
+					break
 				}
-				//fmt.Println(c)
 				encodedValues[c] = rows[j].Encode(separator, longestWords)
 				c++
 			}
-			encodingChannel <- encodedValues
+			encodingChannel <- strings.Join(encodedValues, "\n")
 		}(batchStart, batchEnd)
 	}
 
+	start := time.Now()
 	output := make([]string, amountRows)
 	for i := 0; i < batchJobs; i++ {
 		v := <-encodingChannel
-		output = append(output, v...)
+		output = append(output, v)
 	}
+	fmt.Printf("getting data took %s \n", time.Since(start))
 
 	//fmt.Println(output)
 
