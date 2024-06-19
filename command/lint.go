@@ -2,6 +2,7 @@ package command
 
 import (
 	"csv-format/table"
+	"csv-format/utils/console"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
@@ -10,26 +11,16 @@ import (
 
 var lintDelimiter *string
 
-var Reset = "\033[0m"
-var Red = "\033[31m"
-var Green = "\033[32m"
-var Yellow = "\033[33m"
-var Blue = "\033[34m"
-var Magenta = "\033[35m"
-var Cyan = "\033[36m"
-var Gray = "\033[37m"
-var White = "\033[97m"
-
 func Lint(cmd *cobra.Command, args []string) {
 	filePath := args[0]
 
 	if !fileExists(filePath) {
-		fmt.Printf("%sFile does not exist%s\n", Red, Reset)
+		fmt.Printf("%sFile does not exist%s\n", console.Red, console.Reset)
 		os.Exit(1)
 	}
 
 	if len(*lintDelimiter) != 1 {
-		fmt.Printf("%sDelimiter should be 1 character: '%s' given%s\n", Red, *lintDelimiter, Reset)
+		fmt.Printf("%sDelimiter should be 1 character: '%s' given%s\n", console.Red, *lintDelimiter, console.Reset)
 		os.Exit(1)
 	}
 
@@ -47,13 +38,13 @@ func Lint(cmd *cobra.Command, args []string) {
 	for i := 0; i < len(parsed.Rows); i++ {
 		if !parsed.Rows[i].Valid() {
 			hasError = true
-			fmt.Printf("%s%s%s\n", Red, strings.Join(parsed.Rows[i].Errors, ", "), Reset)
+			fmt.Printf("%s%s%s\n", console.Red, strings.Join(parsed.Rows[i].Errors, ", "), console.Reset)
 		}
 	}
 
 	if hasError {
-		fmt.Printf("\u001B[31mFile contains errors%s\n", Reset)
+		fmt.Printf("%sFile contains errors%s\n", console.Red, console.Reset)
 	} else {
-		fmt.Printf("%sFile is valid%s\n", Green, Reset)
+		fmt.Printf("%sFile is valid%s\n", console.Green, console.Reset)
 	}
 }
