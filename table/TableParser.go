@@ -32,6 +32,9 @@ func Parse(text string, delimiter string) Table {
 	amountHeadings := table.getAmountHeadings()
 
 	for i := 1; i < amountLines; i++ {
+		if len(lines[i]) == 0 {
+			continue
+		}
 		row := tableRow.New(lines[i], i+1, amountHeadings, delimiter)
 		//for _, v := range table.rowValidators {
 		//	row.Errors = append(row.Errors, v.validate(&row)...)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 var lintDelimiter *string
@@ -40,13 +41,13 @@ func Lint(cmd *cobra.Command, args []string) {
 	}
 
 	file := string(fileContent)
-	parsed := table.Parse(file, *delimiter)
+	parsed := table.Parse(file, *lintDelimiter)
 
 	hasError := false
 	for i := 0; i < len(parsed.Rows); i++ {
 		if !parsed.Rows[i].Valid() {
 			hasError = true
-			break
+			fmt.Printf("%s%s%s\n", Red, strings.Join(parsed.Rows[i].Errors, ", "), Reset)
 		}
 	}
 
