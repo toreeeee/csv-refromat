@@ -23,6 +23,20 @@ func fileExists(path string) bool {
 	return true
 }
 
+func reformatFile(path string) string {
+	fileContent, err := os.ReadFile(path)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	file := string(fileContent)
+	parsed := table.Parse(file, *delimiter)
+
+	return table.Encode(*outputDelimiter, &parsed.Headings, parsed.Rows)
+}
+
 func Format(cmd *cobra.Command, args []string) {
 	inputFile := args[0]
 
@@ -41,17 +55,7 @@ func Format(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	fileContent, err := os.ReadFile(inputFile)
-
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	file := string(fileContent)
-	parsed := table.Parse(file, *delimiter)
-
-	encoded := table.Encode(*outputDelimiter, &parsed.Headings, parsed.Rows)
+	reformatted := reformatFile(inputFile)
 
 	var outPath string
 	if len(*outputFile) != 0 {
@@ -61,14 +65,14 @@ func Format(cmd *cobra.Command, args []string) {
 	}
 
 	if *writeToFile {
-		err = os.WriteFile(outPath, []byte(encoded), fs.ModePerm)
+		err := os.WriteFile(outPath, []byte(reformatted), fs.ModePerm)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		fmt.Println("Wrote output to file")
+		fmt.Println("File has been updated")
 	} else {
-		fmt.Println(encoded)
+		fmt.Println(reformatted)
 	}
 }

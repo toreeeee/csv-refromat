@@ -33,9 +33,9 @@ func Parse(text string, delimiter string) Table {
 
 	for i := 1; i < amountLines; i++ {
 		row := tableRow.New(lines[i], i+1, amountHeadings, delimiter)
-		for _, v := range table.rowValidators {
-			row.Errors = append(row.Errors, v.validate(&row)...)
-		}
+		//for _, v := range table.rowValidators {
+		//	row.Errors = append(row.Errors, v.validate(&row)...)
+		//}
 		table.Rows[i-1] = row
 
 	}

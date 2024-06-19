@@ -38,7 +38,7 @@ func reformatFile(t *table.Table, outPath string) {
 }
 
 func process() {
-	command.Init()
+	//command.Init()
 
 	//if *inputFile == "" {
 	//	flag.Usage()

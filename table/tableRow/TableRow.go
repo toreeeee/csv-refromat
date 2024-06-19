@@ -58,7 +58,7 @@ func New(line string, lineNr int, expectedColumns int, delimiter string) TableRo
 	row := TableRow{Cols: split}
 
 	if len(row.Cols) != expectedColumns {
-		fmt.Printf("%d: Expected %d column(s), got %d\n", lineNr, expectedColumns, len(row.Cols))
+		fmt.Printf("\u001B[31mline %d: Expected %d column(s), got %d\033[97m\n", lineNr, expectedColumns, len(row.Cols))
 		row.Errors = append(row.Errors, fmt.Sprintf("Expected %d column(s), got %d", expectedColumns, len(row.Cols)))
 	}
 
