@@ -1,7 +1,7 @@
 package table
 
 import (
-	"csv-format/table/tableRow"
+	"csv-format/table/table_row"
 	"math"
 	"sort"
 	"strings"
@@ -24,7 +24,7 @@ func parseHeadings(items []string) []string {
 }
 
 type ParsedTableRowBatch struct {
-	rows []tableRow.TableRow
+	rows []table_row.TableRow
 	idx  int
 }
 
@@ -34,8 +34,8 @@ func Parse(text string, delimiter string) Table {
 	lines := strings.Split(text, "\n")
 	amountLines := len(lines)
 
-	table.Headings = tableRow.TableRow{Cols: parseHeadings(strings.Split(lines[0], delimiter))}
-	table.Rows = make([]tableRow.TableRow, 0)
+	table.Headings = table_row.TableRow{Cols: parseHeadings(strings.Split(lines[0], delimiter))}
+	table.Rows = make([]table_row.TableRow, 0)
 	amountHeadings := table.getAmountHeadings()
 
 	const amountThreads = 64
@@ -57,11 +57,11 @@ func Parse(text string, delimiter string) Table {
 		}
 
 		go func(batchStart int, batchEnd int, batchSize int, idx int) {
-			output := make([]tableRow.TableRow, batchSize)
+			output := make([]table_row.TableRow, batchSize)
 
 			c := 0
 			for j := batchStart; j < batchEnd; j++ {
-				output[c] = tableRow.New(lines[j], j+1, amountHeadings, delimiter)
+				output[c] = table_row.New(lines[j], j+1, amountHeadings, delimiter)
 				c++
 			}
 

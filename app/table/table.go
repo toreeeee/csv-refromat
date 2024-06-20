@@ -1,7 +1,7 @@
 package table
 
 import (
-	"csv-format/table/tableRow"
+	"csv-format/table/table_row"
 	"fmt"
 	"math"
 	"sort"
@@ -11,8 +11,8 @@ import (
 type Table struct {
 	rowValidators []ITableRowValidator
 
-	Headings tableRow.TableRow
-	Rows     []tableRow.TableRow
+	Headings table_row.TableRow
+	Rows     []table_row.TableRow
 }
 
 func filter[T any](input []T, testFn func(*T) bool) (ret []T) {
@@ -24,19 +24,19 @@ func filter[T any](input []T, testFn func(*T) bool) (ret []T) {
 	return
 }
 
-func (t *Table) GetValidRows() []tableRow.TableRow {
-	return filter(t.Rows, func(r *tableRow.TableRow) bool {
+func (t *Table) GetValidRows() []table_row.TableRow {
+	return filter(t.Rows, func(r *table_row.TableRow) bool {
 		return r.Valid()
 	})
 }
 
-func (t *Table) GetInvalidRows() []tableRow.TableRow {
-	return filter(t.Rows, func(r *tableRow.TableRow) bool {
+func (t *Table) GetInvalidRows() []table_row.TableRow {
+	return filter(t.Rows, func(r *table_row.TableRow) bool {
 		return !r.Valid()
 	})
 }
 
-func getLongestWordCountInColumnRow(rows []tableRow.TableRow, col int) int {
+func getLongestWordCountInColumnRow(rows []table_row.TableRow, col int) int {
 	longest := 0
 
 	for i := 0; i < len(rows); i++ {
@@ -53,7 +53,7 @@ func getLongestWordCountInColumnRow(rows []tableRow.TableRow, col int) int {
 	return longest
 }
 
-func EncodeWithErrors(separator string, heading *tableRow.TableRow, rows []tableRow.TableRow) string {
+func EncodeWithErrors(separator string, heading *table_row.TableRow, rows []table_row.TableRow) string {
 	heading.Cols = append(heading.Cols, "errors")
 	for i := 0; i < len(rows); i++ {
 		rows[i].Cols = append(rows[i].Cols, strings.Join(rows[i].Errors, ", "))
@@ -67,7 +67,7 @@ type EncodingOrderResult struct {
 	idx     int
 }
 
-func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableRow) string {
+func Encode(separator string, heading *table_row.TableRow, rows []table_row.TableRow) string {
 	headingCount := len(heading.Cols)
 	longestWords := make([]int, headingCount)
 

@@ -1,7 +1,7 @@
 package command
 
 import (
-	"csv-format/table"
+	table2 "csv-format/table"
 	"csv-format/utils/console"
 	"errors"
 	"fmt"
@@ -36,11 +36,11 @@ func reformatFile(path string) string {
 
 	file := string(fileContent)
 	parsingStart := time.Now()
-	parsed := table.Parse(file, *delimiter)
+	parsed := table2.Parse(file, *delimiter)
 	console.Success("Parsing took %s", time.Since(parsingStart))
 
 	encodingStart := time.Now()
-	encoded := table.Encode(*outputDelimiter, &parsed.Headings, parsed.Rows)
+	encoded := table2.Encode(*outputDelimiter, &parsed.Headings, parsed.Rows)
 	console.Success("Encoding took %s", time.Since(encodingStart))
 
 	return encoded

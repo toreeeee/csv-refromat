@@ -1,4 +1,4 @@
-package tableRow
+package table_row
 
 import (
 	"csv-format/utils/array"

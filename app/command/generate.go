@@ -2,7 +2,7 @@ package command
 
 import (
 	"csv-format/table"
-	"csv-format/table/tableRow"
+	"csv-format/table/table_row"
 	"csv-format/utils/console"
 	"fmt"
 	"github.com/spf13/cobra"
@@ -38,14 +38,14 @@ func Generate(cmd *cobra.Command, args []string) {
 	}
 
 	t := table.Table{
-		Rows: make([]tableRow.TableRow, 0),
-		Headings: tableRow.TableRow{
+		Rows: make([]table_row.TableRow, 0),
+		Headings: table_row.TableRow{
 			Cols: []string{"1st", "2nd", "3rd", "4th"},
 		},
 	}
 
 	for i := 0; i < int(amountOfRows); i++ {
-		t.Rows = append(t.Rows, tableRow.TableRow{
+		t.Rows = append(t.Rows, table_row.TableRow{
 			Cols: []string{
 				randStringBytes(randInt(10, 16)),
 				randStringBytes(randInt(10, 16)),
