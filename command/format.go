@@ -84,6 +84,6 @@ func Format(cmd *cobra.Command, args []string) {
 
 		fmt.Println("File has been updated")
 	} else {
-		//fmt.Println(reformatted)
+		fmt.Println(reformatted)
 	}
 }

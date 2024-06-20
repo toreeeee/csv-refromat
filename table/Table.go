@@ -2,8 +2,10 @@ package table
 
 import (
 	"csv-format/table/tableRow"
+	"csv-format/utils/console"
 	"fmt"
 	"math"
+	"sort"
 	"strings"
 	"time"
 )
@@ -62,6 +64,13 @@ func EncodeWithErrors(separator string, heading *tableRow.TableRow, rows []table
 	return Encode(separator, heading, rows)
 }
 
+type EncodingOrderResult struct {
+	content string
+	idx     int
+}
+
+// TODO: fix encoder ordering
+
 func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableRow) string {
 	headingCount := len(heading.Cols)
 	longestWords := make([]int, headingCount)
@@ -79,7 +88,7 @@ func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableR
 	amountRows := len(rows)
 	batchSize := int(math.Ceil(float64(amountRows) / float64(64.0)))
 
-	encodingChannel := make(chan string)
+	encodingChannel := make(chan EncodingOrderResult)
 
 	fmt.Printf("amount rows %d\n", amountRows)
 	fmt.Printf("batchSize: %d\n", batchSize)
@@ -88,29 +97,47 @@ func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableR
 
 	for i := 0; i < batchJobs; i++ {
 		batchStart := batchSize * i
-		batchEnd := batchSize + batchStart
+		batchEnd := (batchSize + batchStart)
 
-		go func(batchStart int, batchEnd int) {
+		if batchEnd > amountRows {
+			batchEnd = amountRows
+		}
+
+		go func(batchStart int, batchEnd int, idx int) {
 			encodedValues := make([]string, batchSize)
 			c := 0
 			for j := batchStart; j < batchEnd; j++ {
-				if j >= amountRows {
-					break
-				}
 				encodedValues[c] = rows[j].Encode(separator, longestWords)
 				c++
 			}
-			encodingChannel <- strings.Join(encodedValues, "\n")
-		}(batchStart, batchEnd)
+
+			encodingChannel <- EncodingOrderResult{content: strings.Join(filter(encodedValues, func(s *string) bool {
+				return len(*s) > 0
+			}), "\n"), idx: idx}
+		}(batchStart, batchEnd, i)
 	}
 
-	start := time.Now()
-	output := make([]string, amountRows)
+	sortedRows := make([]EncodingOrderResult, 0)
 	for i := 0; i < batchJobs; i++ {
 		v := <-encodingChannel
-		output = append(output, v)
+		sortedRows = append(sortedRows, v)
 	}
-	fmt.Printf("getting data took %s \n", time.Since(start))
+
+	sort.SliceStable(sortedRows, func(i, j int) bool {
+		return sortedRows[i].idx < sortedRows[j].idx
+	})
+
+	start := time.Now()
+	output := make([]string, 0)
+	for i := 0; i < batchJobs; i++ {
+		output = append(output, sortedRows[i].content)
+	}
+
+	console.Info("getting data took %s", time.Since(start))
+
+	//output = filter(output, func(s *string) bool {
+	//	return len(*s) != 0
+	//})
 
 	//fmt.Println(output)
 
