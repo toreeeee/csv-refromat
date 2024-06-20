@@ -2,12 +2,10 @@ package table
 
 import (
 	"csv-format/table/tableRow"
-	"csv-format/utils/console"
 	"fmt"
 	"math"
 	"sort"
 	"strings"
-	"time"
 )
 
 type Table struct {
@@ -69,8 +67,6 @@ type EncodingOrderResult struct {
 	idx     int
 }
 
-// TODO: fix encoder ordering
-
 func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableRow) string {
 	headingCount := len(heading.Cols)
 	longestWords := make([]int, headingCount)
@@ -86,12 +82,9 @@ func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableR
 	}
 
 	amountRows := len(rows)
-	batchSize := int(math.Ceil(float64(amountRows) / float64(64.0)))
+	batchSize := int(math.Ceil(float64(amountRows) / float64(128.0)))
 
 	encodingChannel := make(chan EncodingOrderResult)
-
-	fmt.Printf("amount rows %d\n", amountRows)
-	fmt.Printf("batchSize: %d\n", batchSize)
 
 	batchJobs := int(math.Ceil(float64(amountRows) / float64(batchSize)))
 
@@ -127,19 +120,10 @@ func Encode(separator string, heading *tableRow.TableRow, rows []tableRow.TableR
 		return sortedRows[i].idx < sortedRows[j].idx
 	})
 
-	start := time.Now()
 	output := make([]string, 0)
 	for i := 0; i < batchJobs; i++ {
 		output = append(output, sortedRows[i].content)
 	}
-
-	console.Info("getting data took %s", time.Since(start))
-
-	//output = filter(output, func(s *string) bool {
-	//	return len(*s) != 0
-	//})
-
-	//fmt.Println(output)
 
 	return fmt.Sprintf(
 		"%s\n%s", heading.Encode(separator, longestWords),

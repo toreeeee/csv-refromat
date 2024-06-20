@@ -2,8 +2,10 @@ package command
 
 import (
 	"csv-format/table"
+	"csv-format/utils/console"
 	"errors"
 	"fmt"
+	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
 	"io/fs"
 	"os"
@@ -35,11 +37,11 @@ func reformatFile(path string) string {
 	file := string(fileContent)
 	parsingStart := time.Now()
 	parsed := table.Parse(file, *delimiter)
-	fmt.Printf("Parsing took %s\n", time.Since(parsingStart))
+	console.Success("Parsing took %s", time.Since(parsingStart))
 
 	encodingStart := time.Now()
 	encoded := table.Encode(*outputDelimiter, &parsed.Headings, parsed.Rows)
-	fmt.Printf("Encoding took %s\n", time.Since(encodingStart))
+	console.Success("Encoding took %s", time.Since(encodingStart))
 
 	return encoded
 }
@@ -62,11 +64,10 @@ func Format(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	startTime := time.Now()
+	sp := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+	sp.Start()
 
 	reformatted := reformatFile(inputFile)
-
-	fmt.Printf("took %s\n", time.Since(startTime))
 
 	var outPath string
 	if len(*outputFile) != 0 {
@@ -82,7 +83,9 @@ func Format(cmd *cobra.Command, args []string) {
 			os.Exit(1)
 		}
 
-		fmt.Println("File has been updated")
+		sp.Stop()
+
+		console.Success("File has been reformatted")
 	} else {
 		fmt.Println(reformatted)
 	}
