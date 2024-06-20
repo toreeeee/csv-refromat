@@ -27,7 +27,7 @@ func (v *Validator) Validate(row *table_row.TableRow) []string {
 	}
 
 	if firstName, err := row.GetColumn(1); err == nil {
-		if strings.Contains(firstName, " ") {
+		if strings.Contains(firstName, " ") || len(firstName) == 0 {
 			result = append(result, "Incorrect first name")
 		}
 	} else {
@@ -35,7 +35,7 @@ func (v *Validator) Validate(row *table_row.TableRow) []string {
 	}
 
 	if lastName, err := row.GetColumn(2); err == nil {
-		if strings.Contains(lastName, " ") {
+		if strings.Contains(lastName, " ") || len(lastName) == 0 {
 			result = append(result, "Incorrect last name")
 		}
 	} else {
@@ -43,9 +43,13 @@ func (v *Validator) Validate(row *table_row.TableRow) []string {
 	}
 
 	if salary, err := row.GetColumn(3); err == nil {
-		_, err := strconv.ParseFloat(salary, 32)
+		value, err := strconv.ParseFloat(salary, 32)
 		if err != nil {
 			result = append(result, err.Error())
+		}
+
+		if value < 0 {
+			result = append(result, "Salary cannot be negative")
 		}
 	} else {
 		result = append(result, "Salary is missing from row")

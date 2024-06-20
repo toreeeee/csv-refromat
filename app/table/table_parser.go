@@ -2,6 +2,7 @@ package table
 
 import (
 	"csv-format/table/table_row"
+	"csv-format/utils/extra_math"
 	"math"
 	"sort"
 	"strings"
@@ -29,7 +30,7 @@ type ParsedTableRowBatch struct {
 }
 
 func Parse(text string, delimiter string) Table {
-	table := Table{rowValidators: []ITableRowValidator{&Validator{}}}
+	table := Table{}
 
 	lines := strings.Split(text, "\n")
 	amountLines := len(lines)
@@ -38,7 +39,7 @@ func Parse(text string, delimiter string) Table {
 	table.Rows = make([]table_row.TableRow, 0)
 	amountHeadings := table.getAmountHeadings()
 
-	const amountThreads = 64
+	amountThreads := extra_math.Min(64, amountLines-1)
 
 	batchSize := int(math.Round(float64(amountLines) / float64(amountThreads)))
 	parsingChannel := make(chan ParsedTableRowBatch)
@@ -46,7 +47,7 @@ func Parse(text string, delimiter string) Table {
 
 	for i := 0; i < batchJobs; i++ {
 		batchStart := batchSize * i
-		batchEnd := (batchSize + batchStart)
+		batchEnd := batchSize + batchStart
 
 		if batchStart <= 1 {
 			batchStart = 1

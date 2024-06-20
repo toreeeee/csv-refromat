@@ -19,3 +19,15 @@ func TestTableRowValidator(t *testing.T) {
 
 	assert.Equal(t, 0, len(result))
 }
+
+func TestTableRowValidatorInvalid(t *testing.T) {
+	row := table_row.TableRow{Cols: []string{"33-08-2001", "", "", "-1"}}
+
+	validator := table.Validator{}
+
+	result := validator.Validate(&row)
+
+	fmt.Println(result)
+
+	assert.Equal(t, 4, len(result))
+}
