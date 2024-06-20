@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"io/fs"
-	"math/rand"
+	"math/rand/v2"
 	"os"
 	"strconv"
 )
@@ -17,13 +17,13 @@ var generateDelimiter *string
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
 
 func randInt(min int, max int) int {
-	return min + rand.Intn(max-min)
+	return min + rand.IntN(max-min)
 }
 
 func randStringBytes(n int) string {
 	b := make([]byte, n)
 	for i := range b {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+		b[i] = letterBytes[rand.IntN(len(letterBytes))]
 	}
 	return string(b)
 }
