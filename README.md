@@ -3,14 +3,22 @@
 ## How to use
 
 ```
-Usage of ./csv-format:
-  -d string
-        -d <delimiter> (default ":")
-  -f    add -f to format file and save to input path
-  -i string
-        -i <file_path>
-  -o string
-        -o <file_path> (default "out.csv")
+CSV utility program
+
+Usage:
+  csv [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  format      Reformat csv file
+  generate    Generate csv file with randomized data
+  help        Help about any command
+  lint        Check csv file for errors
+
+Flags:
+  -h, --help   help for csv
+
+Use "csv [command] --help" for more information about a command.
 ```
 
 
