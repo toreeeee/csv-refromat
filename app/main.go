@@ -1,7 +1,7 @@
 package main
 
 import (
-	"csv-format/command"
+	"csv/command"
 )
 
 func main() {

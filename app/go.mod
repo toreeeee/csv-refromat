@@ -1,4 +1,4 @@
-module csv-format
+module csv
 
 go 1.22.4
 

@@ -1,9 +1,9 @@
 package command
 
 import (
-	"csv-format/table"
-	"csv-format/table/table_row"
-	"csv-format/utils/console"
+	"csv/table"
+	"csv/table/table_row"
+	"csv/utils/console"
 	"fmt"
 	"github.com/spf13/cobra"
 	"io/fs"

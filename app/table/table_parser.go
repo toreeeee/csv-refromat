@@ -1,8 +1,8 @@
 package table
 
 import (
-	"csv-format/table/table_row"
-	"csv-format/utils/extra_math"
+	"csv/table/table_row"
+	"csv/utils/extra_math"
 	"math"
 	"sort"
 	"strings"

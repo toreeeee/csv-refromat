@@ -1,8 +1,8 @@
 package command
 
 import (
-	table2 "csv-format/table"
-	"csv-format/utils/console"
+	table2 "csv/table"
+	"csv/utils/console"
 	"errors"
 	"fmt"
 	"github.com/briandowns/spinner"

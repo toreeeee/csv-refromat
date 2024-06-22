@@ -1,7 +1,7 @@
 package table
 
 import (
-	"csv-format/table/table_row"
+	"csv/table/table_row"
 	"strconv"
 	"strings"
 	"time"

@@ -1,7 +1,7 @@
 package table_row
 
 import (
-	"csv-format/utils/array"
+	"csv/utils/array"
 	"fmt"
 	"math"
 	"strings"

@@ -1,8 +1,8 @@
 package table_test
 
 import (
-	"csv-format/table"
-	"csv-format/table/table_row"
+	"csv/table"
+	"csv/table/table_row"
 	"testing"
 )
 

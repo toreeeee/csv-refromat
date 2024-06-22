@@ -1,7 +1,7 @@
 package extra_math_test
 
 import (
-	"csv-format/utils/extra_math"
+	"csv/utils/extra_math"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
