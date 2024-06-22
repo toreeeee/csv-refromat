@@ -64,6 +64,7 @@ func Init() {
 	}
 
 	generateDelimiter = generateCmd.Flags().StringP("delimiter", "d", ",", "Delimiter used in CSV file")
+	generateSimple = generateCmd.Flags().BoolP("simple", "s", false, "Generate simple csv file")
 
 	rootCmd.AddCommand(reformatCmd)
 	rootCmd.AddCommand(lintCmd)

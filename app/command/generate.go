@@ -13,6 +13,7 @@ import (
 )
 
 var generateDelimiter *string
+var generateSimple *bool
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
 
@@ -45,14 +46,25 @@ func Generate(cmd *cobra.Command, args []string) {
 	}
 
 	for i := 0; i < int(amountOfRows); i++ {
-		t.Rows = append(t.Rows, table_row.TableRow{
-			Cols: []string{
-				randStringBytes(randInt(10, 16)),
-				randStringBytes(randInt(10, 16)),
-				randStringBytes(randInt(10, 16)),
-				randStringBytes(randInt(10, 16)),
-			},
-		})
+		if *generateSimple {
+			t.Rows = append(t.Rows, table_row.TableRow{
+				Cols: []string{
+					"value",
+					"value",
+					"value",
+					"value",
+				},
+			})
+		} else {
+			t.Rows = append(t.Rows, table_row.TableRow{
+				Cols: []string{
+					randStringBytes(randInt(10, 16)),
+					randStringBytes(randInt(10, 16)),
+					randStringBytes(randInt(10, 16)),
+					randStringBytes(randInt(10, 16)),
+				},
+			})
+		}
 	}
 
 	encoded := t.Encode(*generateDelimiter)

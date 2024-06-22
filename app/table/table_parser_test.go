@@ -76,6 +76,7 @@ func benchmarkParse(amountRows int, b *testing.B) {
 
 	str := fmt.Sprintf("%s\n%s", header, strings.Join(content, "\n"))
 
+	b.ReportAllocs()
 	b.ResetTimer()
 	var r table.Table
 	for i := 0; i < b.N; i++ {
