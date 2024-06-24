@@ -17,6 +17,7 @@ func benchmarkEncode(amountRows int, b *testing.B) {
 		t.Rows = append(t.Rows, table_row.TableRow{Cols: []string{"first", "second", "third"}})
 	}
 
+	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_ = t.Encode(delimiter)
