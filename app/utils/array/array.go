@@ -9,3 +9,12 @@ func Map[T any, O any](input []T, fn func(*T, int) O) []O {
 
 	return output
 }
+
+func Filter[T any](input []T, testFn func(*T) bool) (ret []T) {
+	for _, s := range input {
+		if testFn(&s) {
+			ret = append(ret, s)
+		}
+	}
+	return
+}

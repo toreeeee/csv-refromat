@@ -2,6 +2,7 @@ package table
 
 import (
 	"csv/table/table_row"
+	"csv/utils/array"
 	"fmt"
 	"math"
 	"sort"
@@ -15,23 +16,14 @@ type Table struct {
 	Rows     []table_row.TableRow
 }
 
-func filter[T any](input []T, testFn func(*T) bool) (ret []T) {
-	for _, s := range input {
-		if testFn(&s) {
-			ret = append(ret, s)
-		}
-	}
-	return
-}
-
 func (t *Table) GetValidRows() []table_row.TableRow {
-	return filter(t.Rows, func(r *table_row.TableRow) bool {
+	return array.Filter(t.Rows, func(r *table_row.TableRow) bool {
 		return r.Valid()
 	})
 }
 
 func (t *Table) GetInvalidRows() []table_row.TableRow {
-	return filter(t.Rows, func(r *table_row.TableRow) bool {
+	return array.Filter(t.Rows, func(r *table_row.TableRow) bool {
 		return !r.Valid()
 	})
 }
@@ -104,7 +96,7 @@ func Encode(separator string, heading *table_row.TableRow, rows []table_row.Tabl
 				c++
 			}
 
-			encodingChannel <- EncodingOrderResult{content: strings.Join(filter(encodedValues, func(s *string) bool {
+			encodingChannel <- EncodingOrderResult{content: strings.Join(array.Filter(encodedValues, func(s *string) bool {
 				return len(*s) > 0
 			}), "\n"), idx: idx}
 		}(batchStart, batchEnd, i)

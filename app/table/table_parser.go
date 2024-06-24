@@ -2,6 +2,7 @@ package table
 
 import (
 	"csv/table/table_row"
+	"csv/utils/console"
 	"csv/utils/extra_math"
 	"math"
 	"sort"
@@ -39,6 +40,10 @@ func Parse(text string, delimiter string) Table {
 	table.Rows = make([]table_row.TableRow, 0)
 	amountHeadings := table.getAmountHeadings()
 
+	if amountHeadings < 2 {
+		console.Warn("Table only has %d columns", amountHeadings)
+	}
+
 	amountThreads := extra_math.Min(64, amountLines-1)
 
 	batchSize := int(math.Round(float64(amountLines) / float64(amountThreads)))
@@ -73,8 +78,7 @@ func Parse(text string, delimiter string) Table {
 
 	sortedRows := make([]ParsedTableRowBatch, 0)
 	for i := 0; i < batchJobs; i++ {
-		rows := <-parsingChannel
-		sortedRows = append(sortedRows, rows)
+		sortedRows = append(sortedRows, <-parsingChannel)
 	}
 	sort.SliceStable(sortedRows, func(i, j int) bool {
 		return sortedRows[i].idx < sortedRows[j].idx
