@@ -42,7 +42,7 @@ func Parse(text string, delimiter string) Table {
 	amountThreads := extra_math.Min(64, amountLines-1)
 
 	batchSize := int(math.Round(float64(amountLines) / float64(amountThreads)))
-	parsingChannel := make(chan ParsedTableRowBatch)
+	parsingChannel := make(chan ParsedTableRowBatch, batchSize)
 	batchJobs := int(math.Ceil(float64(amountLines) / float64(batchSize)))
 
 	for i := 0; i < batchJobs; i++ {
