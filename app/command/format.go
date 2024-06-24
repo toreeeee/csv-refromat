@@ -30,7 +30,7 @@ func reformatFile(path string) string {
 	fileContent, err := os.ReadFile(path)
 
 	if err != nil {
-		fmt.Println(err)
+		console.Error(err.Error())
 		os.Exit(1)
 	}
 
@@ -50,17 +50,17 @@ func Format(cmd *cobra.Command, args []string) {
 	inputFile := args[0]
 
 	if !fileExists(inputFile) {
-		fmt.Println("Error: Input file not found.")
+		console.Error("Input file not found.")
 		os.Exit(1)
 	}
 
 	if len(*delimiter) != 1 {
-		fmt.Printf("Input delimiter should be 1 character: '%s' given\n", *delimiter)
+		console.Error("Input delimiter should be 1 character: '%s' given\n", *delimiter)
 		os.Exit(1)
 	}
 
 	if len(*outputDelimiter) != 1 {
-		fmt.Printf("Output delimiter should be 1 character: '%s' given\n", *outputDelimiter)
+		console.Error("Output delimiter should be 1 character: '%s' given\n", *outputDelimiter)
 		os.Exit(1)
 	}
 
@@ -79,7 +79,7 @@ func Format(cmd *cobra.Command, args []string) {
 	if *writeToFile {
 		err := os.WriteFile(outPath, []byte(reformatted), fs.ModePerm)
 		if err != nil {
-			fmt.Println(err)
+			console.Error(err.Error())
 			os.Exit(1)
 		}
 
