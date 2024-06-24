@@ -2,28 +2,34 @@ package console
 
 import "fmt"
 
-var Reset = "\033[0m"
-var Red = "\033[31m"
-var Green = "\033[32m"
-var Yellow = "\033[33m"
-var Blue = "\033[34m"
-var Magenta = "\033[35m"
-var Cyan = "\033[36m"
-var Gray = "\033[37m"
-var White = "\033[97m"
+const (
+	reset   = "\033[0m"
+	red     = "\033[31m"
+	green   = "\033[32m"
+	yellow  = "\033[33m"
+	blue    = "\033[34m"
+	magenta = "\033[35m"
+	cyan    = "\033[36m"
+	gray    = "\033[37m"
+	white   = "\033[97m"
+)
 
 func Error(format string, a ...any) {
-	fmt.Printf("%sError: %s%s\n", Red, fmt.Sprintf(format, a...), Reset)
+	fmt.Printf("%sError: %s%s\n", red, fmt.Sprintf(format, a...), reset)
 }
 
 func Success(format string, a ...any) {
-	fmt.Printf("%sSuccess: %s%s\n", Green, fmt.Sprintf(format, a...), Reset)
+	fmt.Printf("%sSuccess: %s%s\n", green, fmt.Sprintf(format, a...), reset)
 }
 
 func Info(format string, a ...any) {
-	fmt.Printf("%sInfo: %s%s\n", Blue, fmt.Sprintf(format, a...), Reset)
+	fmt.Printf("%sInfo: %s%s\n", blue, fmt.Sprintf(format, a...), reset)
 }
 
 func Warn(format string, a ...any) {
-	fmt.Printf("%sWarning: %s%s\n", Yellow, fmt.Sprintf(format, a...), Reset)
+	fmt.Printf("%sWarning: %s%s\n", yellow, fmt.Sprintf(format, a...), reset)
+}
+
+func Debug(format string, a ...any) {
+	fmt.Printf("%sWarning: %s%s\n", gray, fmt.Sprintf(format, a...), reset)
 }

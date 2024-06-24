@@ -34,7 +34,7 @@ func Generate(cmd *cobra.Command, args []string) {
 	outPath := args[1]
 
 	if len(*generateDelimiter) != 1 {
-		console.Error("Input delimiter should be 1 character: '%s' given\n", *delimiter)
+		console.Error("Input delimiter should be 1 character: '%s' given", *delimiter)
 		os.Exit(1)
 	}
 
@@ -76,30 +76,4 @@ func Generate(cmd *cobra.Command, args []string) {
 	}
 
 	console.Success("Generated file: %s\n", outPath)
-
-	//
-	//startTime := time.Now()
-	//
-	//reformatted := reformatFile(inputFile)
-	//
-	//fmt.Printf("took %s\n", time.Since(startTime))
-	//
-	//var outPath string
-	//if len(*outputFile) != 0 {
-	//	outPath = *outputFile
-	//} else {
-	//	outPath = inputFile
-	//}
-	//
-	//if *writeToFile {
-	//	err := os.WriteFile(outPath, []byte(reformatted), fs.ModePerm)
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		os.Exit(1)
-	//	}
-	//
-	//	fmt.Println("File has been updated")
-	//} else {
-	//	fmt.Println(reformatted)
-	//}
 }

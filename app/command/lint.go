@@ -15,12 +15,12 @@ func Lint(cmd *cobra.Command, args []string) {
 	filePath := args[0]
 
 	if !fileExists(filePath) {
-		fmt.Printf("%sFile does not exist%s\n", console.Red, console.Reset)
+		console.Error("File does not exist")
 		os.Exit(1)
 	}
 
 	if len(*lintDelimiter) != 1 {
-		fmt.Printf("%sDelimiter should be 1 character: '%s' given%s\n", console.Red, *lintDelimiter, console.Reset)
+		console.Error("Delimiter should be 1 character: '%s' given", *lintDelimiter)
 		os.Exit(1)
 	}
 
@@ -38,13 +38,13 @@ func Lint(cmd *cobra.Command, args []string) {
 	for i := 0; i < len(parsed.Rows); i++ {
 		if !parsed.Rows[i].Valid() {
 			hasError = true
-			fmt.Printf("%s%s%s\n", console.Red, strings.Join(parsed.Rows[i].Errors, ", "), console.Reset)
+			console.Error("%s", strings.Join(parsed.Rows[i].Errors, ", "))
 		}
 	}
 
 	if hasError {
-		fmt.Printf("%sFile contains errors%s\n", console.Red, console.Reset)
+		console.Error("File contains errors")
 	} else {
-		fmt.Printf("%sFile is valid%s\n", console.Green, console.Reset)
+		console.Error("File is valid")
 	}
 }
