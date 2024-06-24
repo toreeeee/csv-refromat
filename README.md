@@ -25,5 +25,5 @@ Use "csv [command] --help" for more information about a command.
 ### Reformat file
 
 ```bash
-./csv-format -i input.csv -od "," -d "," -f
+./csv -i input.csv -od "," -d "," -f
 ```
